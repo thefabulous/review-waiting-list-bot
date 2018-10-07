@@ -61,11 +61,14 @@ class PullRequests {
       .filter(this.matchesLabel)
       .filter(this.matchesReviewer)
       .reduce((p, c) => {
-        var name = c.reviewer
-        if (!p.hasOwnProperty(name)) {
-          p[name] = 0
-        }
-        p[name]++
+        c.reviewRequests.nodes.forEach(node => {
+          const reviewer = node.requestedReviewer.login
+          if (!p.hasOwnProperty(reviewer)) {
+            p[reviewer] = 0
+          }
+          p[reviewer]++
+        })
+
         return p
       }, {})
 
