@@ -13,6 +13,7 @@ class App {
     const controller = new SlackBot().getController()
 
     controller.hears("ls (.+)", ["direct_message", "direct_mention", "mention"], this.ls)
+    controller.hears("stats (.+)", ["direct_message", "direct_mention", "mention"], this.stats)
   }
 
   static ls(bot, message) {
@@ -29,6 +30,28 @@ class App {
         if (messages.length > 0) {
           _.each(messages, (pr) => convo.say(pr))
           convo.say("That's all. Please review!")
+        } else {
+          convo.say('No pull requests for now.')
+        }
+
+        convo.next()
+      })
+    })
+  }
+
+  static stats(bot, message) {
+    const conditions = new Parser(message.match[1]).parse()
+
+    const client = new GitHubApiClient()
+
+    client.getAllPullRequests(conditions).then((prs) => {
+      bot.startConversation(message, (err, convo) => {
+        convo.say(':memo: Review waiting list stats!')
+
+        const messages = new PullRequests(prs, conditions).convertToSlackMessages()
+
+        if (messages.length > 0) {
+          _.each(messages, (pr) => convo.say(pr))
         } else {
           convo.say('No pull requests for now.')
         }

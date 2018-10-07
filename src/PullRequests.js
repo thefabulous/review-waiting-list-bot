@@ -55,6 +55,29 @@ class PullRequests {
     return reviewers.length > 0 ? `(reviewer: ${reviewers.join(', ')})` : '(no reviewer assigned)'
   }
 
+  stats() {
+    const stats = []
+    var counts = _(this.prs)
+      .reject(this.isIgnorable)
+      .filter(this.matchesLabel)
+      .filter(this.matchesReviewer)
+      .reduce((p, c) => {
+        var name = c.reviewer;
+        if (!p.hasOwnProperty(name)) {
+          p[name] = 0;
+        }
+        p[name]++;
+        return p;
+      }, {});
+
+      var countsExtended = Object.keys(counts).map(k => {
+        return {reviewer: k, count: counts[k]}; });
+
+      return countsExtended.map(stat => {
+        return `${stat.reviewer}: ${stat.count}`
+      }).value()
+  }
+
   convertToSlackMessages() {
     return _(this.prs)
       .reject(this.isIgnorable)
