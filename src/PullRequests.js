@@ -56,7 +56,6 @@ class PullRequests {
   }
 
   stats() {
-    const stats = []
     var counts = _(this.prs)
       .reject(this.isIgnorable)
       .filter(this.matchesLabel)
@@ -73,9 +72,9 @@ class PullRequests {
       var countsExtended = Object.keys(counts).map(k => {
         return {
           reviewer: k, 
-          count: counts[k]}; 
-        }
-      )
+          count: counts[k],
+        } 
+      })
 
       return countsExtended.map(stat => {
         return `${stat.reviewer}: ${stat.count}`
