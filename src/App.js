@@ -48,7 +48,7 @@ class App {
       bot.startConversation(message, (err, convo) => {
         convo.say(':memo: Review waiting list stats!')
 
-        const messages = new PullRequests(prs, conditions).convertToSlackMessages()
+        const messages = new PullRequests(prs, conditions).stats()
 
         if (messages.length > 0) {
           _.each(messages, (pr) => convo.say(pr))
