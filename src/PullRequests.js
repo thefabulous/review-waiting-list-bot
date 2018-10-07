@@ -78,7 +78,7 @@ class PullRequests {
 
       return countsExtended.map(stat => {
         return `${stat.reviewer}: ${stat.count}`
-      }).value()
+      })
   }
 
   convertToSlackMessages() {
